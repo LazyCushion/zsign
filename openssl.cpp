@@ -6,14 +6,17 @@
 #include <openssl/cms.h>
 #include <openssl/err.h>
 #include <openssl/pkcs12.h>
+#include <openssl/conf.h>
 
 class COpenSSLInit
 {
 public:
 	COpenSSLInit()
 	{
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 		OpenSSL_add_all_algorithms();
 		ERR_load_crypto_strings();
+#endif
 	};
 };
 
@@ -47,32 +50,32 @@ const char *appleDevCACert = ""
 							 "-----END CERTIFICATE-----\n";
 
 const char *appleDevCACertG3 = ""
-							 "-----BEGIN CERTIFICATE-----\n"
-							 "MIIEUTCCAzmgAwIBAgIQfK9pCiW3Of57m0R6wXjF7jANBgkqhkiG9w0BAQsFADBi\n"
-							 "MQswCQYDVQQGEwJVUzETMBEGA1UEChMKQXBwbGUgSW5jLjEmMCQGA1UECxMdQXBw\n"
-							 "bGUgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxFjAUBgNVBAMTDUFwcGxlIFJvb3Qg\n"
-							 "Q0EwHhcNMjAwMjE5MTgxMzQ3WhcNMzAwMjIwMDAwMDAwWjB1MUQwQgYDVQQDDDtB\n"
-							 "cHBsZSBXb3JsZHdpZGUgRGV2ZWxvcGVyIFJlbGF0aW9ucyBDZXJ0aWZpY2F0aW9u\n"
-							 "IEF1dGhvcml0eTELMAkGA1UECwwCRzMxEzARBgNVBAoMCkFwcGxlIEluYy4xCzAJ\n"
-							 "BgNVBAYTAlVTMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2PWJ/KhZ\n"
-							 "C4fHTJEuLVaQ03gdpDDppUjvC0O/LYT7JF1FG+XrWTYSXFRknmxiLbTGl8rMPPbW\n"
-							 "BpH85QKmHGq0edVny6zpPwcR4YS8Rx1mjjmi6LRJ7TrS4RBgeo6TjMrA2gzAg9Dj\n"
-							 "+ZHWp4zIwXPirkbRYp2SqJBgN31ols2N4Pyb+ni743uvLRfdW/6AWSN1F7gSwe0b\n"
-							 "5TTO/iK1nkmw5VW/j4SiPKi6xYaVFuQAyZ8D0MyzOhZ71gVcnetHrg21LYwOaU1A\n"
-							 "0EtMOwSejSGxrC5DVDDOwYqGlJhL32oNP/77HK6XF8J4CjDgXx9UO0m3JQAaN4LS\n"
-							 "VpelUkl8YDib7wIDAQABo4HvMIHsMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0j\n"
-							 "BBgwFoAUK9BpR5R2Cf70a40uQKb3R01/CF4wRAYIKwYBBQUHAQEEODA2MDQGCCsG\n"
-							 "AQUFBzABhihodHRwOi8vb2NzcC5hcHBsZS5jb20vb2NzcDAzLWFwcGxlcm9vdGNh\n"
-							 "MC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jcmwuYXBwbGUuY29tL3Jvb3QuY3Js\n"
-							 "MB0GA1UdDgQWBBQJ/sAVkPmvZAqSErkmKGMMl+ynsjAOBgNVHQ8BAf8EBAMCAQYw\n"
-							 "EAYKKoZIhvdjZAYCAQQCBQAwDQYJKoZIhvcNAQELBQADggEBAK1lE+j24IF3RAJH\n"
-							 "Qr5fpTkg6mKp/cWQyXMT1Z6b0KoPjY3L7QHPbChAW8dVJEH4/M/BtSPp3Ozxb8qA\n"
-							 "HXfCxGFJJWevD8o5Ja3T43rMMygNDi6hV0Bz+uZcrgZRKe3jhQxPYdwyFot30ETK\n"
-							 "XXIDMUacrptAGvr04NM++i+MZp+XxFRZ79JI9AeZSWBZGcfdlNHAwWx/eCHvDOs7\n"
-							 "bJmCS1JgOLU5gm3sUjFTvg+RTElJdI+mUcuER04ddSduvfnSXPN/wmwLCTbiZOTC\n"
-							 "NwMUGdXqapSqqdv+9poIZ4vvK7iqF0mDr8/LvOnP6pVxsLRFoszlh6oKw0E6eVza\n"
-							 "UDSdlTs=\n"
-							 "-----END CERTIFICATE-----\n";
+							   "-----BEGIN CERTIFICATE-----\n"
+							   "MIIEUTCCAzmgAwIBAgIQfK9pCiW3Of57m0R6wXjF7jANBgkqhkiG9w0BAQsFADBi\n"
+							   "MQswCQYDVQQGEwJVUzETMBEGA1UEChMKQXBwbGUgSW5jLjEmMCQGA1UECxMdQXBw\n"
+							   "bGUgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkxFjAUBgNVBAMTDUFwcGxlIFJvb3Qg\n"
+							   "Q0EwHhcNMjAwMjE5MTgxMzQ3WhcNMzAwMjIwMDAwMDAwWjB1MUQwQgYDVQQDDDtB\n"
+							   "cHBsZSBXb3JsZHdpZGUgRGV2ZWxvcGVyIFJlbGF0aW9ucyBDZXJ0aWZpY2F0aW9u\n"
+							   "IEF1dGhvcml0eTELMAkGA1UECwwCRzMxEzARBgNVBAoMCkFwcGxlIEluYy4xCzAJ\n"
+							   "BgNVBAYTAlVTMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2PWJ/KhZ\n"
+							   "C4fHTJEuLVaQ03gdpDDppUjvC0O/LYT7JF1FG+XrWTYSXFRknmxiLbTGl8rMPPbW\n"
+							   "BpH85QKmHGq0edVny6zpPwcR4YS8Rx1mjjmi6LRJ7TrS4RBgeo6TjMrA2gzAg9Dj\n"
+							   "+ZHWp4zIwXPirkbRYp2SqJBgN31ols2N4Pyb+ni743uvLRfdW/6AWSN1F7gSwe0b\n"
+							   "5TTO/iK1nkmw5VW/j4SiPKi6xYaVFuQAyZ8D0MyzOhZ71gVcnetHrg21LYwOaU1A\n"
+							   "0EtMOwSejSGxrC5DVDDOwYqGlJhL32oNP/77HK6XF8J4CjDgXx9UO0m3JQAaN4LS\n"
+							   "VpelUkl8YDib7wIDAQABo4HvMIHsMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0j\n"
+							   "BBgwFoAUK9BpR5R2Cf70a40uQKb3R01/CF4wRAYIKwYBBQUHAQEEODA2MDQGCCsG\n"
+							   "AQUFBzABhihodHRwOi8vb2NzcC5hcHBsZS5jb20vb2NzcDAzLWFwcGxlcm9vdGNh\n"
+							   "MC4GA1UdHwQnMCUwI6AhoB+GHWh0dHA6Ly9jcmwuYXBwbGUuY29tL3Jvb3QuY3Js\n"
+							   "MB0GA1UdDgQWBBQJ/sAVkPmvZAqSErkmKGMMl+ynsjAOBgNVHQ8BAf8EBAMCAQYw\n"
+							   "EAYKKoZIhvdjZAYCAQQCBQAwDQYJKoZIhvcNAQELBQADggEBAK1lE+j24IF3RAJH\n"
+							   "Qr5fpTkg6mKp/cWQyXMT1Z6b0KoPjY3L7QHPbChAW8dVJEH4/M/BtSPp3Ozxb8qA\n"
+							   "HXfCxGFJJWevD8o5Ja3T43rMMygNDi6hV0Bz+uZcrgZRKe3jhQxPYdwyFot30ETK\n"
+							   "XXIDMUacrptAGvr04NM++i+MZp+XxFRZ79JI9AeZSWBZGcfdlNHAwWx/eCHvDOs7\n"
+							   "bJmCS1JgOLU5gm3sUjFTvg+RTElJdI+mUcuER04ddSduvfnSXPN/wmwLCTbiZOTC\n"
+							   "NwMUGdXqapSqqdv+9poIZ4vvK7iqF0mDr8/LvOnP6pVxsLRFoszlh6oKw0E6eVza\n"
+							   "UDSdlTs=\n"
+							   "-----END CERTIFICATE-----\n";
 
 const char *appleRootCACert = ""
 							  "-----BEGIN CERTIFICATE-----\n"
@@ -110,7 +113,37 @@ bool CMSError()
 	return false;
 }
 
-bool GenerateCMS(X509 *scert, EVP_PKEY *spkey, const string &strCDHashData, const string &strCDHashesPlist, string &strCMSOutput)
+ASN1_TYPE *_GenerateASN1Type(const string &value)
+{
+	long errline = -1;
+	char *genstr = NULL;
+	BIO *ldapbio = BIO_new(BIO_s_mem());
+	CONF *cnf = NCONF_new(NULL);
+
+	if (cnf == NULL) {
+		ZLog::Error(">>> NCONF_new failed\n");
+		BIO_free(ldapbio);
+	}
+	string a = "asn1=SEQUENCE:A\n[A]\nC=OBJECT:sha256\nB=FORMAT:HEX,OCT:" + value + "\n";
+	int code = BIO_puts(ldapbio, a.c_str());
+	if (NCONF_load_bio(cnf, ldapbio, &errline) <= 0) {
+		BIO_free(ldapbio);
+		NCONF_free(cnf);
+		ZLog::PrintV(">>> NCONF_load_bio failed %d\n", errline);
+	}
+	BIO_free(ldapbio);
+	genstr = NCONF_get_string(cnf, "default", "asn1");
+
+	if (genstr == NULL) {
+		ZLog::Error(">>> NCONF_get_string failed\n");
+		NCONF_free(cnf);
+	}
+	ASN1_TYPE *ret = ASN1_generate_nconf(genstr, cnf);
+	NCONF_free(cnf);
+	return ret;
+}
+
+bool _GenerateCMS(X509 *scert, EVP_PKEY *spkey, const string &strCDHashData, const string &strCDHashesPlist, const string &strCodeDirectorySlotSHA1, const string &strAltnateCodeDirectorySlot256, string &strCMSOutput)
 {
 	if (!scert || !spkey)
 	{
@@ -121,11 +154,11 @@ bool GenerateCMS(X509 *scert, EVP_PKEY *spkey, const string &strCDHashData, cons
 	unsigned long issuerHash = X509_issuer_name_hash(scert);
 	if (0x817d2f7a == issuerHash)
 	{
-		bother1 = BIO_new_mem_buf(appleDevCACert, strlen(appleDevCACert));
+		bother1 = BIO_new_mem_buf(appleDevCACert, (int)strlen(appleDevCACert));
 	}
 	else if (0x9b16b75c == issuerHash)
 	{
-		bother1 = BIO_new_mem_buf(appleDevCACertG3, strlen(appleDevCACertG3));
+		bother1 = BIO_new_mem_buf(appleDevCACertG3, (int)strlen(appleDevCACertG3));
 	}
 	else
 	{
@@ -133,7 +166,7 @@ bool GenerateCMS(X509 *scert, EVP_PKEY *spkey, const string &strCDHashData, cons
 		return false;
 	}
 
-	BIO *bother2 = BIO_new_mem_buf(appleRootCACert, strlen(appleRootCACert));
+	BIO *bother2 = BIO_new_mem_buf(appleRootCACert, (int)strlen(appleRootCACert));
 	if (!bother1 || !bother2)
 	{
 		return CMSError();
@@ -162,36 +195,62 @@ bool GenerateCMS(X509 *scert, EVP_PKEY *spkey, const string &strCDHashData, cons
 		return CMSError();
 	}
 
-	BIO *in = BIO_new_mem_buf(strCDHashData.c_str(), strCDHashData.size());
+	BIO *in = BIO_new_mem_buf(strCDHashData.c_str(), (int)strCDHashData.size());
 	if (!in)
 	{
 		return CMSError();
 	}
 
-	int nFlags = CMS_DETACHED | CMS_NOSMIMECAP | CMS_BINARY | CMS_PARTIAL;
-
-	CMS_ContentInfo *cms = CMS_sign(NULL, NULL, otherCerts, in, nFlags);
+	int nFlags = CMS_PARTIAL | CMS_DETACHED | CMS_NOSMIMECAP | CMS_BINARY;
+	CMS_ContentInfo *cms = CMS_sign(NULL, NULL, otherCerts, NULL, nFlags);
 	if (!cms)
 	{
 		return CMSError();
 	}
 
-	CMS_SignerInfo *si = CMS_add1_signer(cms, scert, spkey, NULL, nFlags);
-	if (!si)
-	{
-		return CMSError();
-	}
+    CMS_SignerInfo * si = CMS_add1_signer(cms, scert, spkey, EVP_sha256(), nFlags);
+//    CMS_add1_signer(cms, NULL, NULL, EVP_sha1(), nFlags);
+    if (!si) {
+        return CMSError();
+    }
+    
+	// add plist
+    ASN1_OBJECT * obj = OBJ_txt2obj("1.2.840.113635.100.9.1", 1);
+    if (!obj) {
+        return CMSError();
+    }
+    
+    int addHashPlist = CMS_signed_add1_attr_by_OBJ(si, obj, 0x4, strCDHashesPlist.c_str(), (int)strCDHashesPlist.size());
+    
+    if (!addHashPlist) {
+        return CMSError();
+    }
 
-	ASN1_OBJECT *obj = OBJ_txt2obj("1.2.840.113635.100.9.1", 1);
-	if (!obj)
+	// add CDHashes
+	string sha256;
+	char buf[16] = {0};
+	for (size_t i = 0; i < strAltnateCodeDirectorySlot256.size(); i++)
 	{
-		return CMSError();
+		sprintf(buf, "%02x", (uint8_t)strAltnateCodeDirectorySlot256[i]);
+		sha256 += buf;
 	}
+	transform(sha256.begin(), sha256.end(), sha256.begin(), ::toupper);
 
-	if (!CMS_signed_add1_attr_by_OBJ(si, obj, 0x4, strCDHashesPlist.c_str(), strCDHashesPlist.size()))
-	{
-		return CMSError();
-	}
+	ASN1_OBJECT * obj2 = OBJ_txt2obj("1.2.840.113635.100.9.2", 1);
+    if (!obj2) {
+        return CMSError();
+    }
+
+	X509_ATTRIBUTE *attr = X509_ATTRIBUTE_new();
+	X509_ATTRIBUTE_set1_object(attr, obj2);
+
+	ASN1_TYPE *type_256 = _GenerateASN1Type(sha256);
+	X509_ATTRIBUTE_set1_data(attr, V_ASN1_SEQUENCE,
+                             type_256->value.asn1_string->data, type_256->value.asn1_string->length);
+	int addHashSHA = CMS_signed_add1_attr(si, attr);
+	if (!addHashSHA) {
+        return CMSError();
+    }
 
 	if (!CMS_final(cms, in, NULL, nFlags))
 	{
@@ -219,13 +278,14 @@ bool GenerateCMS(X509 *scert, EVP_PKEY *spkey, const string &strCDHashData, cons
 
 	strCMSOutput.clear();
 	strCMSOutput.append(bptr->data, bptr->length);
+	ASN1_TYPE_free(type_256);
 	return (!strCMSOutput.empty());
 }
 
 bool GenerateCMS(const string &strSignerCertData, const string &strSignerPKeyData, const string &strCDHashData, const string &strCDHashesPlist, string &strCMSOutput)
 {
-	BIO *bcert = BIO_new_mem_buf(strSignerCertData.c_str(), strSignerCertData.size());
-	BIO *bpkey = BIO_new_mem_buf(strSignerPKeyData.c_str(), strSignerPKeyData.size());
+	BIO *bcert = BIO_new_mem_buf(strSignerCertData.c_str(), (int)strSignerCertData.size());
+	BIO *bpkey = BIO_new_mem_buf(strSignerPKeyData.c_str(), (int)strSignerPKeyData.size());
 
 	if (!bcert || !bpkey)
 	{
@@ -239,7 +299,7 @@ bool GenerateCMS(const string &strSignerCertData, const string &strSignerPKeyDat
 		return CMSError();
 	}
 
-	return GenerateCMS(scert, spkey, strCDHashData, strCDHashesPlist, strCMSOutput);
+	return ::_GenerateCMS(scert, spkey, strCDHashData, strCDHashesPlist, "", "", strCMSOutput);
 }
 
 bool GetCMSContent(const string &strCMSDataInput, string &strContentOutput)
@@ -250,7 +310,7 @@ bool GetCMSContent(const string &strCMSDataInput, string &strContentOutput)
 	}
 
 	BIO *in = BIO_new(BIO_s_mem());
-	OPENSSL_assert((size_t)BIO_write(in, strCMSDataInput.data(), strCMSDataInput.size()) == strCMSDataInput.size());
+	OPENSSL_assert((size_t)BIO_write(in, strCMSDataInput.data(), (int)strCMSDataInput.size()) == strCMSDataInput.size());
 	CMS_ContentInfo *cms = d2i_CMS_bio(in, NULL);
 	if (!cms)
 	{
@@ -342,8 +402,13 @@ void ParseCertSubject(const string &strSubject, JValue &jvSubject)
 	}
 }
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 string ASN1_TIMEtoString(ASN1_TIME *time)
 {
+#else
+string ASN1_TIMEtoString(const ASN1_TIME *time)
+{
+#endif
 	BIO *out = BIO_new(BIO_s_mem());
 	if (!out)
 	{
@@ -389,8 +454,13 @@ bool GetCertInfo(X509 *cert, JValue &jvCertInfo)
 	int type = EVP_PKEY_id(pubkey);
 	jvCertInfo["PublicKey"]["Algorithm"] = OBJ_nid2ln(type);
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	jvCertInfo["Validity"]["NotBefore"] = ASN1_TIMEtoString(X509_get_notBefore(cert));
 	jvCertInfo["Validity"]["NotAfter"] = ASN1_TIMEtoString(X509_get_notAfter(cert));
+#else
+	jvCertInfo["Validity"]["NotBefore"] = ASN1_TIMEtoString(X509_get0_notBefore(cert));
+	jvCertInfo["Validity"]["NotAfter"] = ASN1_TIMEtoString(X509_get0_notAfter(cert));
+#endif
 
 	string strIssuer = X509_NAME_oneline(X509_get_issuer_name(cert), NULL, 0);
 	string strSubject = X509_NAME_oneline(X509_get_subject_name(cert), NULL, 0);
@@ -441,25 +511,25 @@ bool GetCMSInfo(uint8_t *pCMSData, uint32_t uCMSLength, JValue &jvOutput)
 	STACK_OF(CMS_SignerInfo) *sis = CMS_get0_SignerInfos(cms);
 	for (int i = 0; i < sk_CMS_SignerInfo_num(sis); i++)
 	{
-		CMS_SignerInfo* si = sk_CMS_SignerInfo_value(sis, i);
+		CMS_SignerInfo *si = sk_CMS_SignerInfo_value(sis, i);
 		//int CMS_SignerInfo_get0_signer_id(CMS_SignerInfo *si, ASN1_OCTET_STRING **keyid, X509_NAME **issuer, ASN1_INTEGER **sno);
 
 		int nSignedAttsCount = CMS_signed_get_attr_count(si);
-		for(int j = 0; j < nSignedAttsCount; j++)
+		for (int j = 0; j < nSignedAttsCount; j++)
 		{
-			X509_ATTRIBUTE * attr = CMS_signed_get_attr(si, j);
-			if(!attr)
+			X509_ATTRIBUTE *attr = CMS_signed_get_attr(si, j);
+			if (!attr)
 			{
 				continue;
 			}
 			int nCount = X509_ATTRIBUTE_count(attr);
-			if(nCount <= 0)
+			if (nCount <= 0)
 			{
 				continue;
 			}
 
-			ASN1_OBJECT * obj = X509_ATTRIBUTE_get0_object(attr);
-			if(!obj)
+			ASN1_OBJECT *obj = X509_ATTRIBUTE_get0_object(attr);
+			if (!obj)
 			{
 				continue;
 			}
@@ -467,19 +537,19 @@ bool GetCMSInfo(uint8_t *pCMSData, uint32_t uCMSLength, JValue &jvOutput)
 			char txtobj[128] = {0};
 			OBJ_obj2txt(txtobj, 128, obj, 1);
 
-			if(0 == strcmp("1.2.840.113549.1.9.3", txtobj))
-			{//V_ASN1_OBJECT
+			if (0 == strcmp("1.2.840.113549.1.9.3", txtobj))
+			{ //V_ASN1_OBJECT
 				ASN1_TYPE *av = X509_ATTRIBUTE_get0_type(attr, 0);
-				if(NULL != av)
+				if (NULL != av)
 				{
 					jvOutput["attrs"]["ContentType"]["obj"] = txtobj;
 					jvOutput["attrs"]["ContentType"]["data"] = OBJ_nid2ln(OBJ_obj2nid(av->value.object));
 				}
 			}
-			else if(0 == strcmp("1.2.840.113549.1.9.4", txtobj))
-			{//V_ASN1_OCTET_STRING
+			else if (0 == strcmp("1.2.840.113549.1.9.4", txtobj))
+			{ //V_ASN1_OCTET_STRING
 				ASN1_TYPE *av = X509_ATTRIBUTE_get0_type(attr, 0);
-				if(NULL != av)
+				if (NULL != av)
 				{
 					string strSHASum;
 					char buf[16] = {0};
@@ -492,10 +562,10 @@ bool GetCMSInfo(uint8_t *pCMSData, uint32_t uCMSLength, JValue &jvOutput)
 					jvOutput["attrs"]["MessageDigest"]["data"] = strSHASum;
 				}
 			}
-			else if(0 == strcmp("1.2.840.113549.1.9.5", txtobj))
-			{//V_ASN1_UTCTIME
+			else if (0 == strcmp("1.2.840.113549.1.9.5", txtobj))
+			{ //V_ASN1_UTCTIME
 				ASN1_TYPE *av = X509_ATTRIBUTE_get0_type(attr, 0);
-				if(NULL != av)
+				if (NULL != av)
 				{
 					BIO *mem = BIO_new(BIO_s_mem());
 					ASN1_UTCTIME_print(mem, av->value.utctime);
@@ -510,16 +580,16 @@ bool GetCMSInfo(uint8_t *pCMSData, uint32_t uCMSLength, JValue &jvOutput)
 					jvOutput["attrs"]["SigningTime"]["data"] = strTime;
 				}
 			}
-			else if(0 == strcmp("1.2.840.113635.100.9.2", txtobj))
-			{//V_ASN1_SEQUENCE
-				jvOutput["attrs"]["CDHashes2"]["obj"] =  txtobj;
-				for(int m = 0; m < nCount; m++)
+			else if (0 == strcmp("1.2.840.113635.100.9.2", txtobj))
+			{ //V_ASN1_SEQUENCE
+				jvOutput["attrs"]["CDHashes2"]["obj"] = txtobj;
+				for (int m = 0; m < nCount; m++)
 				{
 					ASN1_TYPE *av = X509_ATTRIBUTE_get0_type(attr, m);
-					if(NULL != av)
+					if (NULL != av)
 					{
 						ASN1_STRING *s = av->value.sequence;
-						
+
 						BIO *mem = BIO_new(BIO_s_mem());
 
 						ASN1_parse_dump(mem, s->data, s->length, 2, 0);
@@ -530,13 +600,12 @@ bool GetCMSInfo(uint8_t *pCMSData, uint32_t uCMSLength, JValue &jvOutput)
 						strData.append(bptr->data, bptr->length);
 						BIO_free_all(mem);
 
-
 						string strSHASum;
 						size_t pos1 = strData.find("[HEX DUMP]:");
-						if(string::npos != pos1)
+						if (string::npos != pos1)
 						{
 							size_t pos2 = strData.find("\n", pos1);
-							if(string::npos != pos2)
+							if (string::npos != pos2)
 							{
 								strSHASum = strData.substr(pos1 + 11, pos2 - pos1 - 11);
 							}
@@ -546,21 +615,21 @@ bool GetCMSInfo(uint8_t *pCMSData, uint32_t uCMSLength, JValue &jvOutput)
 					}
 				}
 			}
-			else if(0 == strcmp("1.2.840.113635.100.9.1", txtobj))
-			{//V_ASN1_OCTET_STRING
+			else if (0 == strcmp("1.2.840.113635.100.9.1", txtobj))
+			{ //V_ASN1_OCTET_STRING
 				ASN1_TYPE *av = X509_ATTRIBUTE_get0_type(attr, 0);
-				if(NULL != av)
+				if (NULL != av)
 				{
 					string strPList;
-					strPList.append((const char*)av->value.octet_string->data, av->value.octet_string->length);
-					jvOutput["attrs"]["CDHashes"]["obj"] =  txtobj;
-					jvOutput["attrs"]["CDHashes"]["data"] =  strPList;
+					strPList.append((const char *)av->value.octet_string->data, av->value.octet_string->length);
+					jvOutput["attrs"]["CDHashes"]["obj"] = txtobj;
+					jvOutput["attrs"]["CDHashes"]["data"] = strPList;
 				}
 			}
 			else
 			{
 				ASN1_TYPE *av = X509_ATTRIBUTE_get0_type(attr, 0);
-				if(NULL != av)
+				if (NULL != av)
 				{
 					JValue jvAttr;
 					jvAttr["obj"] = txtobj;
@@ -578,7 +647,7 @@ bool GetCMSInfo(uint8_t *pCMSData, uint32_t uCMSLength, JValue &jvOutput)
 
 ZSignAsset::ZSignAsset()
 {
-	m_evpPkey = NULL;
+	m_evpPKey = NULL;
 	m_x509Cert = NULL;
 }
 
@@ -613,22 +682,22 @@ bool ZSignAsset::Init(const string &strSignerCertFile, const string &strSignerPK
 	}
 
 	X509 *x509Cert = NULL;
-	EVP_PKEY *evpPkey = NULL;
+	EVP_PKEY *evpPKey = NULL;
 	BIO *bioPKey = BIO_new_file(strSignerPKeyFile.c_str(), "r");
 	if (NULL != bioPKey)
 	{
-		evpPkey = PEM_read_bio_PrivateKey(bioPKey, NULL, NULL, (void *)strPassword.c_str());
-		if (NULL == evpPkey)
+		evpPKey = PEM_read_bio_PrivateKey(bioPKey, NULL, NULL, (void *)strPassword.c_str());
+		if (NULL == evpPKey)
 		{
 			BIO_reset(bioPKey);
-			evpPkey = d2i_PrivateKey_bio(bioPKey, NULL);
-			if (NULL == evpPkey)
+			evpPKey = d2i_PrivateKey_bio(bioPKey, NULL);
+			if (NULL == evpPKey)
 			{
 				BIO_reset(bioPKey);
 				PKCS12 *p12 = d2i_PKCS12_bio(bioPKey, NULL);
 				if (NULL != p12)
 				{
-					if (0 == PKCS12_parse(p12, strPassword.c_str(), &evpPkey, &x509Cert, NULL))
+					if (0 == PKCS12_parse(p12, strPassword.c_str(), &evpPKey, &x509Cert, NULL))
 					{
 						CMSError();
 					}
@@ -639,7 +708,7 @@ bool ZSignAsset::Init(const string &strSignerCertFile, const string &strSignerPK
 		BIO_free(bioPKey);
 	}
 
-	if (NULL == evpPkey)
+	if (NULL == evpPKey)
 	{
 		ZLog::Error(">>> Can't Load P12 or PrivateKey File! Please Input The Correct File And Password!\n");
 		return false;
@@ -662,7 +731,7 @@ bool ZSignAsset::Init(const string &strSignerCertFile, const string &strSignerPK
 
 	if (NULL != x509Cert)
 	{
-		if (!X509_check_private_key(x509Cert, evpPkey))
+		if (!X509_check_private_key(x509Cert, evpPKey))
 		{
 			X509_free(x509Cert);
 			x509Cert = NULL;
@@ -674,13 +743,13 @@ bool ZSignAsset::Init(const string &strSignerCertFile, const string &strSignerPK
 		for (size_t i = 0; i < jvProv["DeveloperCertificates"].size(); i++)
 		{
 			string strCertData = jvProv["DeveloperCertificates"][i].asData();
-			BIO *bioCert = BIO_new_mem_buf(strCertData.c_str(), strCertData.size());
+			BIO *bioCert = BIO_new_mem_buf(strCertData.c_str(), (int)strCertData.size());
 			if (NULL != bioCert)
 			{
 				x509Cert = d2i_X509_bio(bioCert, NULL);
 				if (NULL != x509Cert)
 				{
-					if (X509_check_private_key(x509Cert, evpPkey))
+					if (X509_check_private_key(x509Cert, evpPKey))
 					{
 						break;
 					}
@@ -704,12 +773,12 @@ bool ZSignAsset::Init(const string &strSignerCertFile, const string &strSignerPK
 		return false;
 	}
 
-	m_evpPkey = evpPkey;
+	m_evpPKey = evpPKey;
 	m_x509Cert = x509Cert;
 	return true;
 }
 
-bool ZSignAsset::GenerateCMS(const string &strCDHashData, const string &strCDHashesPlist, string &strCMSOutput)
+bool ZSignAsset::GenerateCMS(const string &strCDHashData, const string &strCDHashesPlist, const string &strCodeDirectorySlotSHA1, const string &strAltnateCodeDirectorySlot256, string &strCMSOutput)
 {
-	return ::GenerateCMS((X509 *)m_x509Cert, (EVP_PKEY *)m_evpPkey, strCDHashData, strCDHashesPlist, strCMSOutput);
+	return ::_GenerateCMS((X509 *)m_x509Cert, (EVP_PKEY *)m_evpPKey, strCDHashData, strCDHashesPlist, strCodeDirectorySlotSHA1, strAltnateCodeDirectorySlot256, strCMSOutput);
 }
